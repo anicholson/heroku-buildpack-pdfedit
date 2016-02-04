@@ -1,0 +1,4 @@
+#!/bin/bash
+
+echo "Providing PDFEdit to the application"
+exit 0
