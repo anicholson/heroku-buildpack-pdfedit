@@ -1,0 +1,51 @@
+#!/bin/bash
+
+build=$1
+cache=$2
+
+
+indent() {
+    sed -u 's/^/       /'
+}
+
+arrow() {
+    echo "-----> $1"
+}
+
+download() {
+    url=$1
+    basename=$2
+    if test -f ${basename}
+    then
+        true
+    else
+        wget -nv -c ${url}/${basename}
+    fi
+}
+
+error() {
+    msg=$1
+    echo "    !! ${msg}"
+    exit 1
+}
+
+
+mkcd() {
+    mkdir -p $1 && cd $1
+}
+
+arrow "Checking for dependencies"
+
+pushd /etc/apt/sources.list.d
+echo "deb http://archive.ubuntu.com/ubuntu lucid main" > pdfedit.list
+popd
+
+apt-get update
+apt-get install -yy libqt3-mt
+
+cd ${cache}
+
+
+arrow "Installing PDFEdit 0.4.5-2"
+download "http://us.archive.ubuntu.com/ubuntu/pool/universe/p/pdfedit/" "pdfedit_0.4.5-2_amd64.deb"
+dpkg -i pdfedit_0.4.5-2_amd64.deb
